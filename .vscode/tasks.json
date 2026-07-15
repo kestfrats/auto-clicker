@@ -1,0 +1,94 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build app",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/AutoClicker.csproj",
+        "--configuration",
+        "Debug"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build solution",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/AutoClicker.sln",
+        "--configuration",
+        "Debug",
+        "-p:Platform=x64"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "${workspaceFolder}/AutoClicker.sln",
+        "--configuration",
+        "Debug",
+        "-p:Platform=x64"
+      ],
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish release x64",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/AutoClicker.csproj",
+        "--configuration",
+        "Release",
+        "-p:PublishProfile=win-x64",
+        "-p:OutputPath=${workspaceFolder}/artifacts/build/win-x64/"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish release x86",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/AutoClicker.csproj",
+        "--configuration",
+        "Release",
+        "-p:PublishProfile=win-x86",
+        "-p:OutputPath=${workspaceFolder}/artifacts/build/win-x86/"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish release arm64",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/AutoClicker.csproj",
+        "--configuration",
+        "Release",
+        "-p:PublishProfile=win-arm64",
+        "-p:OutputPath=${workspaceFolder}/artifacts/build/win-arm64/"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

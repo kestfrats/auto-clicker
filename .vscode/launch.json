@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run AutoClicker",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build app",
+      "program": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.26100.0/win-x64/AutoClicker.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
+      "name": "Build AutoClicker",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build app",
+      "program": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.26100.0/win-x64/AutoClicker.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "noDebug": true
+    },
+    {
+      "name": "Run Published AutoClicker",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "publish release x64",
+      "program": "${workspaceFolder}/artifacts/publish/win-x64/AutoClicker.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/artifacts/publish/win-x64",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "noDebug": true
+    }
+  ]
+}
