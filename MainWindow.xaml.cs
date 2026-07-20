@@ -26,8 +26,8 @@ public sealed partial class MainWindow : Window
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {
-            presenter.IsMaximizable = false;
-            presenter.IsResizable = false;
+            presenter.IsMaximizable = true;
+            presenter.IsResizable = true;
         }
 
         // Navigate the root frame to the main page on startup.

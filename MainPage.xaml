@@ -159,15 +159,28 @@
         </Style>
     </Page.Resources>
 
-    <Grid Padding="18">
-        <Grid
+    <Grid
+        x:Name="PageRoot"
+        Padding="18"
+        SizeChanged="PageRoot_SizeChanged">
+        <ScrollViewer
+            x:Name="PageScroller"
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto"
+            ZoomMode="Disabled">
+            <Grid
+            x:Name="ContentShell"
             Width="740"
-            Height="452"
+            MinWidth="320"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
         <Border
+            x:Name="ChromeFrame"
             Width="740"
             Height="452"
+            MinWidth="320"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{StaticResource CanvasBrush}"
@@ -222,14 +235,24 @@
                     </Border>
                 </Grid>
 
-                <Grid Grid.Row="1" Padding="12" ColumnSpacing="12">
+                <Grid
+                    x:Name="MainContentGrid"
+                    Grid.Row="1"
+                    Padding="12"
+                    ColumnSpacing="12"
+                    RowSpacing="12">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="260" />
-                        <ColumnDefinition Width="1" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition x:Name="StatusColumn" Width="260" />
+                        <ColumnDefinition x:Name="DividerColumn" Width="1" />
+                        <ColumnDefinition x:Name="ControlsColumn" Width="*" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                    <StackPanel Spacing="10">
+                    <StackPanel x:Name="StatusPanel" Spacing="10">
                         <Border Style="{StaticResource ChromePanelStyle}">
                             <StackPanel Spacing="8">
                                 <Border Background="{StaticResource CanvasBrush}" Padding="8,5" BorderBrush="{StaticResource ChromeIndigoBrush}" BorderThickness="0,1,0,2">
@@ -381,9 +404,16 @@
 
                     </StackPanel>
 
-                    <Rectangle Grid.Column="1" Fill="{StaticResource CarbonBrush}" Opacity="0.72" />
+                    <Rectangle
+                        x:Name="MainDivider"
+                        Grid.Column="1"
+                        Fill="{StaticResource CarbonBrush}"
+                        Opacity="0.72" />
 
-                    <StackPanel Grid.Column="2" Spacing="8">
+                    <StackPanel
+                        x:Name="ControlsPanel"
+                        Grid.Column="2"
+                        Spacing="8">
                         <Border Style="{StaticResource ChromePanelStyle}">
                             <StackPanel Spacing="10">
                                 <Border Background="{StaticResource CanvasBrush}" Padding="8,5" BorderBrush="{StaticResource ChromeIndigoBrush}" BorderThickness="0,1,0,2">
@@ -505,6 +535,7 @@
             </Grid>
         </Border>
         <Canvas
+            x:Name="CornerChrome"
             Width="740"
             Height="452"
             IsHitTestVisible="False">
@@ -518,5 +549,6 @@
             <Line X1="718" Y1="452" X2="740" Y2="430" Stroke="{StaticResource ChromeIndigoBrush}" StrokeThickness="4" />
         </Canvas>
         </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

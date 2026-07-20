@@ -13,6 +13,11 @@ namespace AutoClicker;
 /// </summary>
 public sealed partial class MainPage : Page
 {
+    private const double DesignWidth = 740;
+    private const double DesignHeight = 452;
+    private const double CompactBreakpoint = 720;
+    private const double CompactMinWidth = 320;
+
     private readonly SettingsStore _settingsStore = new();
     private readonly ClickEngine _clickEngine = new(new InputInjector());
     private readonly HotkeyService _hotkeyService;
@@ -42,6 +47,7 @@ public sealed partial class MainPage : Page
         RegisterHotkeys();
         UpdateReadouts();
         UpdateStatus();
+        ApplyResponsiveLayout(ActualWidth);
     }
 
     private void MainPage_Unloaded(object sender, RoutedEventArgs e)
@@ -218,6 +224,82 @@ public sealed partial class MainPage : Page
         StatusOutlineRightText.Opacity = showOutline ? 1 : 0;
         StatusOutlineTopText.Opacity = showOutline ? 1 : 0;
         StatusDropText.Opacity = showOutline ? 0.48 : 0;
+    }
+
+    private void PageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        ApplyResponsiveLayout(e.NewSize.Width);
+    }
+
+    private void ApplyResponsiveLayout(double availablePageWidth)
+    {
+        if (availablePageWidth <= 0)
+        {
+            return;
+        }
+
+        var isCompact = availablePageWidth < CompactBreakpoint;
+        PageRoot.Padding = isCompact ? new Thickness(10) : new Thickness(18);
+
+        var horizontalPadding = PageRoot.Padding.Left + PageRoot.Padding.Right;
+        var shellWidth = Math.Min(DesignWidth, Math.Max(CompactMinWidth, availablePageWidth - horizontalPadding));
+
+        ContentShell.Width = shellWidth;
+        ChromeFrame.Width = shellWidth;
+
+        if (isCompact)
+        {
+            ContentShell.VerticalAlignment = VerticalAlignment.Top;
+            ChromeFrame.Height = double.NaN;
+            ChromeFrame.MinHeight = 0;
+            CornerChrome.Visibility = Visibility.Collapsed;
+
+            MainContentGrid.ColumnSpacing = 0;
+            MainContentGrid.RowSpacing = 12;
+
+            StatusColumn.Width = new GridLength(1, GridUnitType.Star);
+            DividerColumn.Width = new GridLength(0);
+            ControlsColumn.Width = new GridLength(0);
+
+            Grid.SetColumn(StatusPanel, 0);
+            Grid.SetRow(StatusPanel, 0);
+
+            Grid.SetColumn(MainDivider, 0);
+            Grid.SetRow(MainDivider, 1);
+            MainDivider.Height = 1;
+            MainDivider.HorizontalAlignment = HorizontalAlignment.Stretch;
+            MainDivider.VerticalAlignment = VerticalAlignment.Center;
+
+            Grid.SetColumn(ControlsPanel, 0);
+            Grid.SetRow(ControlsPanel, 2);
+            return;
+        }
+
+        ContentShell.VerticalAlignment = VerticalAlignment.Center;
+        ChromeFrame.Height = DesignHeight;
+        ChromeFrame.MinHeight = DesignHeight;
+        CornerChrome.Visibility = Visibility.Visible;
+        CornerChrome.Width = DesignWidth;
+        CornerChrome.Height = DesignHeight;
+
+        MainContentGrid.ColumnSpacing = 12;
+        MainContentGrid.RowSpacing = 0;
+
+        StatusColumn.Width = new GridLength(260);
+        DividerColumn.Width = new GridLength(1);
+        ControlsColumn.Width = new GridLength(1, GridUnitType.Star);
+
+        Grid.SetColumn(StatusPanel, 0);
+        Grid.SetRow(StatusPanel, 0);
+
+        Grid.SetColumn(MainDivider, 1);
+        Grid.SetRow(MainDivider, 0);
+        MainDivider.Height = double.NaN;
+        MainDivider.HorizontalAlignment = HorizontalAlignment.Stretch;
+        MainDivider.VerticalAlignment = VerticalAlignment.Stretch;
+
+        Grid.SetColumn(ControlsPanel, 2);
+        Grid.SetRow(ControlsPanel, 0);
     }
 
     private void ClickEngine_StateChanged(object? sender, EventArgs e)

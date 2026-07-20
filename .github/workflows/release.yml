@@ -1,0 +1,71 @@
+name: Build AutoClicker
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build portable Windows packages
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore AutoClicker.sln
+
+      - name: Test
+        run: dotnet test AutoClicker.sln --configuration Release -p:Platform=x64
+
+      - name: Publish portable builds
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $targets = @("win-x64", "win-x86", "win-arm64")
+
+          New-Item -ItemType Directory -Force -Path "artifacts" | Out-Null
+
+          foreach ($target in $targets) {
+            dotnet publish .\AutoClicker.csproj --configuration Release -p:PublishProfile=$target
+
+            $publishDir = "artifacts\publish\$target"
+            $zipPath = "artifacts\AutoClicker-$target.zip"
+
+            if (Test-Path $zipPath) {
+              Remove-Item $zipPath
+            }
+
+            Compress-Archive -Path "$publishDir\*" -DestinationPath $zipPath -Force
+          }
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: AutoClicker-portable
+          path: artifacts/AutoClicker-*.zip
+          retention-days: 14
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release create "${{ github.ref_name }}" artifacts/AutoClicker-*.zip `
+            --title "AutoClicker ${{ github.ref_name }}" `
+            --notes "Portable Windows builds. Extract the matching ZIP and run AutoClicker.exe."
